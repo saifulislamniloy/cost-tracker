@@ -1,0 +1,150 @@
+<div id="all-nodes">
+    <div class="input-group mb-3 hide-property" id="entry-component-template">
+        <input type="text" class="form-control"
+               name="entry-data"
+               placeholder="Enter content"
+               aria-label="Enter content"
+               aria-describedby="basic-addon2"
+               onkeyup="updateEntry(this)"
+        >
+        <i class="lni lni-trash-can delete-icon" onclick="deleteEntry(this)"></i>
+        <input type="hidden" name="entry-id">
+    </div>
+
+    <div th:each="entry : ${entries}" class="input-group mb-3">
+        <input type="text" class="form-control"
+               name="entry-data"
+               th:value="${entry.amount}"
+               placeholder="Enter content"
+               aria-label="Enter content"
+               aria-describedby="basic-addon2"
+               onkeyup="updateEntry(this, event)"
+        >
+        <i class="lni lni-trash-can delete-icon" onclick="deleteEntry(this)"></i>
+        <input type="hidden" th:value="${entry.id}" name="entry-id">
+    </div>
+
+    <div class="input-group mb-3" id="new-entry-entry-component">
+        <input type="text" class="form-control"
+               id="entry-data"
+               name="entry-data"
+               placeholder="Enter content"
+               aria-label="Enter content"
+               aria-describedby="basic-addon2"
+        >
+    </div>
+</div>
+
+<script th:src="@{/lib/ajax-client.js}"></script>
+<script th:inline="javascript">
+    let allNodes = document.getElementById("all-nodes");
+
+    let entryComponent = (() => {
+        let componentTemplate = document.getElementById("entry-component-template");
+
+        function getComponentClone() {
+            let clone = componentTemplate.cloneNode(true);
+            showElement(clone);
+            return clone;
+        }
+
+        function getIdElement(component) {
+            return component.querySelector("input[name='entry-id']");
+        }
+
+        function getDataElement(component) {
+            return component.querySelector("input[name='entry-data']");
+        }
+
+        function getTypeElement(component) {
+            return component.querySelector("select");
+        }
+
+        return {
+            getIdElement,
+            getDataElement,
+            getTypeElement,
+            getComponentClone
+        }
+    })();
+
+    let newEntryComponent = (() => {
+        let newEntryComponent = document.getElementById("new-entry-entry-component");
+
+        function getComponent() {
+            return newEntryComponent;
+        }
+
+        function getDataElement() {
+            return getComponent().querySelector("input[name='entry-data']");
+        }
+
+        function getTypeElement() {
+            return getComponent().querySelector("select");
+        }
+
+        function resetComponent() {
+            getDataElement().value = '';
+        }
+
+        return {
+            getComponent,
+            getDataElement,
+            getTypeElement,
+            resetComponent
+        }
+    })();
+
+    newEntryComponent.getDataElement().addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            saveEntry();
+        }
+    });
+
+    function saveEntry() {
+        if(!isNewEntryComponentValid()) return;
+
+        let data = {
+            typeId: newEntryComponent.getTypeElement().value,
+            data: newEntryComponent.getDataElement().value
+        };
+
+        ajaxClient.postData('add-entry', data)
+            .then(success => appendToUi(success))
+            .catch(error => console.log(error));
+    }
+
+    function isNewEntryComponentValid() {
+        return newEntryComponent.getDataElement().value.trim() !== '';
+    }
+
+    function appendToUi(entry) {
+        let cloneNode = entryComponent.getComponentClone().cloneNode(true);
+        entryComponent.getDataElement(cloneNode).value = entry.data;
+        entryComponent.getTypeElement(cloneNode).value = entry.typeId;
+        entryComponent.getIdElement(cloneNode).value = entry.id;
+
+        allNodes.insertBefore(cloneNode, newEntryComponent.getComponent());
+        newEntryComponent.resetComponent();
+    }
+
+    function updateEntry(element, event) {
+        if (event.key === 'Enter') {
+            // Your logic for handling Enter key press
+        } else {
+            // Handle other key presses as needed
+        }
+    }
+
+    function deleteEntry(element) {
+        let component = element.parentElement;
+        let entryId = entryComponent.getIdElement(component).value;
+        ajaxClient.deleteData(`delete-entry/${entryId}`)
+            .then(success => {
+                console.log(success);
+                component.remove();
+            })
+            .catch(error => alert(error));
+    }
+</script>

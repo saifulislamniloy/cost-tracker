@@ -1,0 +1,12 @@
+.delete-icon {
+    color: #b02a37;
+    font-size: 30px;
+    padding: 5px;
+}
+
+.delete-icon:hover {
+    scale: 1.25;
+    transition: font-size;
+    transition-delay: 100ms;
+    transition-duration: 1000ms;
+}

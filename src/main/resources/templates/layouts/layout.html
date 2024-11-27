@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar With Bootstrap</title>
+    <link th:href="@{/css/lineicons.css}" rel="stylesheet" crossorigin="anonymous"/>
+    <link th:href="@{/css/common.css}" rel="stylesheet" crossorigin="anonymous"/>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/side-bar.css}">
+</head>
+
+<body>
+<div class="wrapper">
+    <aside id="sidebar">
+        <div class="d-flex">
+            <button class="toggle-btn" type="button">
+                <i class="lni lni-grid-alt"></i>
+            </button>
+            <div class="sidebar-logo">
+                <a href="#">Cost Tracker</a>
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link">
+                    <i class="lni lni-agenda"></i>
+                    <span>Entries</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link">
+                    <i class="lni lni-user"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link">
+                    <i class="lni lni-cog"></i>
+                    <span>Setting</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-link">
+                <i class="lni lni-exit"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+    <div class="main p-3">
+        <div class="text-center">
+            <h1>
+                Cost Tracker
+            </h1>
+        </div>
+        <th:block th:replace="~{${content}}"></th:block>
+    </div>
+    <div style="display: none">
+        <a th:href="@{/static}" id="application-context-path"></a>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}" crossorigin="anonymous"></script>
+<script th:src="@{/js/layout.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+
+</html>
