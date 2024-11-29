@@ -1,4 +1,6 @@
 let ajaxClient = (() => {
+    const contextPath = "[[${applicationContextPath}}]]";
+
     async function getData(url) {
         return new Promise(async function (resolve, reject) {
             await fetch(getCompleteUrl(url))
@@ -36,8 +38,8 @@ let ajaxClient = (() => {
     }
 
     function getCompleteUrl(url) {
-        if (url.startsWith('/')) url = url.substring(1);
-        return `${getApplicationContextPath()}${url}`;
+        let baseUrl = document.getElementById('application-context-path');
+        return `${baseUrl.value}/${url}`;
     }
 
     function getApplicationContextPath() {

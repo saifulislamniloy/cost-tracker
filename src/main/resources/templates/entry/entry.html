@@ -1,15 +1,17 @@
 <div id="all-nodes">
-    <div class="input-group mb-3 hide-property" id="entry-component-template">
-        <input type="text" class="form-control"
-               name="entry-data"
-               placeholder="Enter content"
-               aria-label="Enter content"
-               aria-describedby="basic-addon2"
-               onkeyup="updateEntry(this)"
-        >
-        <i class="lni lni-trash-can delete-icon" onclick="deleteEntry(this)"></i>
-        <input type="hidden" name="entry-id">
-    </div>
+    <template id="entry-component-template">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control"
+                   name="entry-data"
+                   placeholder="Enter content"
+                   aria-label="Enter content"
+                   aria-describedby="basic-addon2"
+                   onkeyup="updateEntry(this)"
+            >
+            <i class="lni lni-trash-can delete-icon" onclick="deleteEntry(this)"></i>
+            <input type="hidden" name="entry-id">
+        </div>
+    </template>
 
     <div th:each="entry : ${entries}" class="input-group mb-3">
         <input type="text" class="form-control"
@@ -43,9 +45,7 @@
         let componentTemplate = document.getElementById("entry-component-template");
 
         function getComponentClone() {
-            let clone = componentTemplate.cloneNode(true);
-            showElement(clone);
-            return clone;
+            return componentTemplate.content.cloneNode(true);
         }
 
         function getIdElement(component) {
@@ -56,14 +56,10 @@
             return component.querySelector("input[name='entry-data']");
         }
 
-        function getTypeElement(component) {
-            return component.querySelector("select");
-        }
 
         return {
             getIdElement,
             getDataElement,
-            getTypeElement,
             getComponentClone
         }
     })();
@@ -79,10 +75,6 @@
             return getComponent().querySelector("input[name='entry-data']");
         }
 
-        function getTypeElement() {
-            return getComponent().querySelector("select");
-        }
-
         function resetComponent() {
             getDataElement().value = '';
         }
@@ -90,7 +82,6 @@
         return {
             getComponent,
             getDataElement,
-            getTypeElement,
             resetComponent
         }
     })();
@@ -103,11 +94,11 @@
     });
 
     function saveEntry() {
-        if(!isNewEntryComponentValid()) return;
+        if (!isNewEntryComponentValid()) return;
 
         let data = {
-            typeId: newEntryComponent.getTypeElement().value,
-            data: newEntryComponent.getDataElement().value
+            amount: newEntryComponent.getDataElement().value,
+            insertionTime: new Date().getTime(),
         };
 
         ajaxClient.postData('add-entry', data)
@@ -120,9 +111,8 @@
     }
 
     function appendToUi(entry) {
-        let cloneNode = entryComponent.getComponentClone().cloneNode(true);
-        entryComponent.getDataElement(cloneNode).value = entry.data;
-        entryComponent.getTypeElement(cloneNode).value = entry.typeId;
+        let cloneNode = entryComponent.getComponentClone();
+        entryComponent.getDataElement(cloneNode).value = entry.amount;
         entryComponent.getIdElement(cloneNode).value = entry.id;
 
         allNodes.insertBefore(cloneNode, newEntryComponent.getComponent());

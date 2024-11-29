@@ -58,9 +58,7 @@
         </div>
         <th:block th:replace="~{${content}}"></th:block>
     </div>
-    <div style="display: none">
-        <a th:href="@{/static}" id="application-context-path"></a>
-    </div>
+    <input type="hidden" id="application-context-path" th:value="${applicationContextPath}"/>
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}" crossorigin="anonymous"></script>
 <script th:src="@{/js/layout.js}"></script>
