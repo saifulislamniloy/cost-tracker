@@ -53,7 +53,10 @@ public class SecurityConfiguration {
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/auth/logout")
                                 .addLogoutHandler(logoutHandler)
-                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                                .logoutSuccessHandler((request, response, authentication) -> {
+                                    SecurityContextHolder.clearContext();
+                                    response.sendRedirect("/api/v1/auth/login");
+                                })
                 )
         ;
 
