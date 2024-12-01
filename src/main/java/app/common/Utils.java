@@ -1,11 +1,25 @@
 package app.common;
 
+import app.security.user.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
 
 public class Utils {
+    public static class CurrentUser {
+        private static final ThreadLocal<User> currentUser = new ThreadLocal<>();
+
+        public static void set(UserDetails user) {
+            currentUser.set((User) user);
+        }
+
+        public static Long getId() {
+            return currentUser.get() == null ? -1L : currentUser.get().getId();
+        }
+
+    }
     public static class Security {
         public static final String ACCESS_TOKEN_KEY = "access_token";
 

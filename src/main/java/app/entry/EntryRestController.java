@@ -1,6 +1,7 @@
 package app.entry;
 
 import app.common.ApiResponse;
+import app.common.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class EntryRestController {
         Entry entry = new Entry();
         entry.setAmount(model.getAmount());
         entry.setInsertionTime(model.getInsertionTime());
-        entry.setUserId(-1L);
+        entry.setUserId(Utils.CurrentUser.getId());
         Entry savedEntry = entryService.saveEntry(entry);
 
         return savedEntry != null ?
